@@ -1,65 +1,114 @@
-// Diese Zeile muss immer ganz oben stehen, wenn die Komponente interaktiv ist.
-// Sie sagt Next.js: "Dieser Code braucht JavaScript im Browser (für Klicks, Tippen etc.)".
 'use client';
 
-// Hier definieren wir die Funktion "ChatPanel". 
-// "export default" erlaubt es uns, diese Funktion in anderen Dateien (wie page.tsx) zu benutzen.
+// 1. IMPORT: Wir brauchen wieder unser Gedächtnis (useState).
+import { useState } from 'react';
+
+// Wir definieren hier einen "Typ" für unsere Nachrichten (gut für die Ordnung).
+// Jede Nachricht hat einen Text und einen Absender (user oder bot).
+interface Message {
+  id: number;
+  text: string;
+  sender: 'user' | 'bot';
+}
+
 export default function ChatPanel() {
-  return (
-    /* DER HAUPT-CONTAINER DES CHATS
-       - w-96: Breite von 96 Einheiten (ca. 384 Pixel).
-       - bg-white: Hintergrundfarbe Weiß.
-       - border-l: Ein Rahmen (Border) nur an der linken Seite (l = left).
-       - border-gray-200: Die Farbe des Rahmens ist ein ganz helles Grau.
-       - p-6: Ein Innenabstand (Padding) von 6 Einheiten auf allen Seiten.
-       - shadow-xl: Ein großer Schatten nach links, damit das Panel Tiefe bekommt.
-       - flex: Macht dieses Div zu einem Flex-Container.
-       - flex-col: Ordnet die Inhalte (Titel, Nachrichten, Input) untereinander an.
+  
+  // 2. GEDÄCHTNIS FÜR DAS EINGABEFELD (wie eben)
+  const [input, setInput] = useState('');
+
+  // 3. GEDÄCHTNIS FÜR DIE NACHRICHTENLISTE
+  // "messages" ist ein Array (eine Liste), die am Anfang leer ist: [].
+  // Hier speichern wir alle Sprechblasen ab.
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  // 4. FUNKTION: NACHRICHT HINZUFÜGEN
+  const handleSend = () => {
+    if (input.trim() === '') return; // Wenn nichts getippt wurde, mach nichts.
+
+    // Wir erstellen ein neues Nachrichten-Objekt
+    const newUserMessage: Message = {
+      id: Date.now(),      // Eine einzigartige Nummer (Zeitstempel), damit React die Nachricht erkennt.
+      text: input,         // Der Text, den du getippt hast.
+      sender: 'user',      // Wir markieren es als User-Nachricht.
+    };
+
+    /* WICHTIGSTES REACT-KONZEPT:
+       Wir ändern "messages" nicht direkt. Wir erstellen eine KOPIE der Liste
+       und hängen die neue Nachricht hinten dran. 
+       Das "...messages" bedeutet: "Nimm alles, was schon in der Liste war".
     */
+    setMessages([...messages, newUserMessage]);
+
+    // Eingabefeld wieder leer machen
+    setInput('');
+
+    // OPTIONAL: Wir simulieren eine Antwort vom Bot nach 1 Sekunde
+    setTimeout(() => {
+      const botReply: Message = {
+        id: Date.now() + 1,
+        text: "Ich habe deine Nachricht erhalten! (Später antwortet hier die KI)",
+        sender: 'bot',
+      };
+      setMessages((prev) => [...prev, botReply]); // "prev" sind die vorherigen Nachrichten
+    }, 1000);
+  };
+
+  return (
     <div className="w-96 bg-white border-l border-gray-200 p-6 shadow-xl flex flex-col">
-      
-      {/* ÜBERSCHRIFT 
-          - text-xl: Schriftgröße "Extra Large".
-          - font-semibold: Halbfette Schriftstärke.
-          - mb-4: Margin-Bottom (Abstand nach unten) von 4 Einheiten.
-          - text-emerald-600: Die Farbe ist ein schönes Smaragdgrün.
-      */}
       <h2 className="text-xl font-semibold mb-4 text-emerald-600">Physio-Coach</h2>
       
-      {/* DAS NACHRICHTEN-FENSTER 
-          - h-[500px]: Eine feste Höhe von genau 500 Pixeln.
-          - bg-gray-50: Ein fast weißer, sehr heller Grauton als Hintergrund.
-          - rounded-lg: Abgerundete Ecken (lg = large).
-          - mb-4: Abstand nach unten zum Eingabefeld.
-          - border border-dashed border-gray-300: Ein gestrichelter, grauer Rahmen.
-          - flex items-center justify-center: Zentriert den Text horizontal und vertikal.
-          - text-gray-400: Hellgraue Textfarbe.
-          - text-sm: Kleine Schriftgröße (small).
+      {/* 5. DAS DYNAMISCHE NACHRICHTEN-FENSTER 
+          - flex-1: Nimmt allen verfügbaren Platz ein.
+          - overflow-y-auto: Wenn es zu viele Nachrichten werden, erscheint ein Scrollbalken.
       */}
-      <div className="h-[500px] bg-gray-50 rounded-lg mb-4 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm">
-        Chat-Verlauf kommt hierher...
+      <div className="flex-1 overflow-y-auto mb-4 space-y-4 pr-2">
+        
+        {/* HIER PASSIERT DIE MAGIE:
+            Wir gehen die Liste "messages" durch und erstellen für jeden Eintrag ein Div.
+            In React nutzt man dafür die Funktion ".map()".
+        */}
+        {messages.map((msg) => (
+          <div 
+            key={msg.id} // React braucht eine "key", um die Liste effizient zu verwalten.
+            className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            {/* DIE SPRECHBLASE
+                Je nach Absender (user oder bot) ändern wir die Farbe.
+            */}
+            <div className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
+              msg.sender === 'user' 
+                ? 'bg-emerald-500 text-white rounded-tr-none' // User: Grün, oben rechts eckig
+                : 'bg-gray-100 text-gray-800 rounded-tl-none' // Bot: Grau, oben links eckig
+            }`}>
+              {msg.text}
+            </div>
+          </div>
+        ))}
+
+        {/* Wenn die Liste leer ist, zeigen wir einen kleinen Hinweis */}
+        {messages.length === 0 && (
+          <p className="text-center text-gray-400 text-xs mt-10">
+            Schreib etwas, um das Training zu starten...
+          </p>
+        )}
       </div>
 
-      {/* DER EINGABE-BEREICH (unten fixiert durch mt-auto im Flex-Layout)
-          - mt-auto: "Margin Top Auto" schiebt dieses Div ganz nach unten im Container.
-      */}
-      <div className="mt-auto">
-        {/* DAS INPUT-FELD
-            - w-full: Nimmt die komplette Breite des Containers ein.
-            - p-3: Innenabstand von 3 Einheiten.
-            - border border-gray-200: Ein feiner, durchgehender grauer Rahmen.
-            - rounded-lg: Abgerundete Ecken.
-            - focus:ring-2: Wenn man reinklickt, erscheint ein 2-Pixel-Ring.
-            - focus:ring-emerald-500: Die Farbe des Rings beim Klicken ist grün.
-            - outline-none: Verhindert, dass der Browser seinen eigenen (hässlichen) blauen Rahmen zeigt.
-            - transition-all: Sorgt dafür, dass Effekte (wie das Aufleuchten des Rings) sanft einblenden.
-            - text-sm: Kleine Schrift für den Text, den du tippst.
-        */}
+      {/* EINGABEBEREICH */}
+      <div className="mt-auto flex gap-2">
         <input 
           type="text" 
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           placeholder="Schreib dem Coach..." 
-          className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none transition-all text-sm"
+          className="flex-1 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none text-sm transition-all"
         />
+        <button 
+          onClick={handleSend}
+          className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors font-medium shadow-md"
+        >
+          Senden
+        </button>
       </div>
     </div>
   );
