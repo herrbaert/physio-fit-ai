@@ -1,65 +1,67 @@
-import Image from "next/image";
+// 1. CLIENT DIRECTIVE
+// In Next.js gibt es "Server Components" und "Client Components".
+// Da wir später Interaktionen (Klicks, Tippen) im Chat brauchen, 
+// sagen wir mit diesem Befehl: "Dieser Teil wird im Browser des Users ausgeführt".
+'use client';
 
+// 2. DIE KOMPONENTE
+// In React ist jede Funktion, die HTML-ähnlichen Code (JSX) zurückgibt, eine Komponente.
+// "export default" bedeutet: Das ist die Haupt-Sache in dieser Datei.
 export default function Home() {
+  
+  // 3. DAS RENDER-ERGEBNIS (JSX)
+  // Alles innerhalb von "return" ist das, was du am Ende im Browser siehst.
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    /* CONTAINER: Wir nutzen Flexbox (flex), um die Seite aufzuteilen.
+       - h-screen: Nutze 100% der Bildschirmhöhe.
+       - bg-gray-100: Ein ganz helles Grau als Hintergrund.
+    */
+    <div className="flex h-screen bg-gray-100">
+      
+      {/* A: DER HAUPTBEREICH (Dashboard)
+          - flex-1: Dieser Teil nimmt allen verfügbaren Platz ein, der übrig bleibt.
+          - p-10: Padding (Abstand nach innen) von 10 Einheiten.
+      */}
+      <div className="flex-1 p-10">
+        {/* text-4xl: Riesige Schrift | font-bold: Fett | text-gray-800: Dunkelgrau */}
+        <h1 className="text-4xl font-bold text-gray-800">Mein Physio-Dashboard</h1>
+        {/* mt-4: Margin-Top (Abstand nach oben) von 4 Einheiten */}
+        <p className="mt-4 text-gray-600">Hier kommen später meine Schmerzkurven hin.</p>
+      </div>
+
+      {/* B: DAS CHAT-PANEL (Rechte Seite)
+          - w-96: Eine feste Breite (ca. 384px), damit der Chat stabil bleibt.
+          - bg-white: Hintergrund Weiß (Material Design Look).
+          - border-l: Ein feiner Rahmen nur auf der linken Seite zur Abgrenzung.
+          - shadow-xl: Ein starker Schatten, damit es "über" dem Dashboard zu schweben scheint.
+      */}
+      <div className="w-96 bg-white border-l border-gray-200 p-6 shadow-xl flex flex-col">
+        
+        {/* Überschrift des Chats */}
+        <h2 className="text-xl font-semibold mb-4 text-emerald-600">Physio-Coach</h2>
+        
+        {/* CHAT-VERLAUF (Platzhalter)
+            - h-[500px]: Feste Höhe für den Moment.
+            - bg-gray-50: Minimal dunkler als Weiß.
+            - border-dashed: Ein gestrichelter Rahmen (sieht man oft bei Platzhaltern).
+            - flex items-center justify-center: Zentriert den Text genau in der Mitte.
+        */}
+        <div className="h-[500px] bg-gray-50 rounded-lg mb-4 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm">
+          Chat-Verlauf kommt hierher...
+        </div>
+
+        {/* EINGABEFELD
+            - focus:ring-2: Wenn man reinklickt, erscheint ein schöner grüner Ring.
+            - outline-none: Entfernt den hässlichen Standard-Rahmen vom Browser.
+            - transition-all: Macht Effekte (wie das Leuchten beim Klicken) geschmeidig.
+        */}
+        <input 
+          type="text" 
+          placeholder="Schreib dem Coach..." 
+          className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+      
     </div>
   );
 }
