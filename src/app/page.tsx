@@ -1,66 +1,52 @@
-// 1. CLIENT DIRECTIVE
-// In Next.js gibt es "Server Components" und "Client Components".
-// Da wir später Interaktionen (Klicks, Tippen) im Chat brauchen, 
-// sagen wir mit diesem Befehl: "Dieser Teil wird im Browser des Users ausgeführt".
+// Auch hier brauchen wir 'use client', da wir eine Client-Komponente (ChatPanel) einbinden.
 'use client';
 
-// 2. DIE KOMPONENTE
-// In React ist jede Funktion, die HTML-ähnlichen Code (JSX) zurückgibt, eine Komponente.
-// "export default" bedeutet: Das ist die Haupt-Sache in dieser Datei.
+// IMPORT-ANWEISUNG: 
+// Hier sagen wir React: "Geh in den Ordner components und lade die Funktion ChatPanel".
+// Das "@" ist ein Alias (Spitzname), der direkt zum "src"-Ordner führt.
+import ChatPanel from '@/components/ChatPanel';
+
 export default function Home() {
-  
-  // 3. DAS RENDER-ERGEBNIS (JSX)
-  // Alles innerhalb von "return" ist das, was du am Ende im Browser siehst.
   return (
-    /* CONTAINER: Wir nutzen Flexbox (flex), um die Seite aufzuteilen.
-       - h-screen: Nutze 100% der Bildschirmhöhe.
-       - bg-gray-100: Ein ganz helles Grau als Hintergrund.
+    /* DER HAUPT-CONTAINER DER GESAMTEN SEITE
+       - flex: Ordnet Dashboard (links) und Chat (rechts) nebeneinander an.
+       - h-screen: Die Seite ist exakt so hoch wie der Bildschirm.
+       - bg-gray-100: Ein sehr helles Grau für das gesamte Dashboard im Hintergrund.
     */
     <div className="flex h-screen bg-gray-100">
       
-      {/* A: DER HAUPTBEREICH (Dashboard)
-          - flex-1: Dieser Teil nimmt allen verfügbaren Platz ein, der übrig bleibt.
-          - p-10: Padding (Abstand nach innen) von 10 Einheiten.
+      {/* LINKER BEREICH: DAS DASHBOARD 
+          - flex-1: Dieses Div "atmet" und nimmt allen Platz ein, den der Chat rechts übrig lässt.
+          - p-10: Großzügiger Abstand zum Rand (10 Einheiten).
       */}
       <div className="flex-1 p-10">
-        {/* text-4xl: Riesige Schrift | font-bold: Fett | text-gray-800: Dunkelgrau */}
+        {/* Hauptüberschrift: Groß (4xl), Fett (bold), Dunkelgrau (800) */}
         <h1 className="text-4xl font-bold text-gray-800">Mein Physio-Dashboard</h1>
-        {/* mt-4: Margin-Top (Abstand nach oben) von 4 Einheiten */}
+        
+        {/* Untertitel: Kleiner Abstand oben (mt-4), normales Grau (600) */}
         <p className="mt-4 text-gray-600">Hier kommen später meine Schmerzkurven hin.</p>
-      </div>
-
-      {/* B: DAS CHAT-PANEL (Rechte Seite)
-          - w-96: Eine feste Breite (ca. 384px), damit der Chat stabil bleibt.
-          - bg-white: Hintergrund Weiß (Material Design Look).
-          - border-l: Ein feiner Rahmen nur auf der linken Seite zur Abgrenzung.
-          - shadow-xl: Ein starker Schatten, damit es "über" dem Dashboard zu schweben scheint.
-      */}
-      <div className="w-96 bg-white border-l border-gray-200 p-6 shadow-xl flex flex-col">
         
-        {/* Überschrift des Chats */}
-        <h2 className="text-xl font-semibold mb-4 text-emerald-600">Physio-Coach</h2>
-        
-        {/* CHAT-VERLAUF (Platzhalter)
-            - h-[500px]: Feste Höhe für den Moment.
-            - bg-gray-50: Minimal dunkler als Weiß.
-            - border-dashed: Ein gestrichelter Rahmen (sieht man oft bei Platzhaltern).
-            - flex items-center justify-center: Zentriert den Text genau in der Mitte.
+        {/* PLATZHALTER FÜR DIE GRAFIK
+            - mt-10: 10 Einheiten Abstand nach oben zum Text.
+            - h-64: Eine feste Höhe von 64 Einheiten (ca. 256px).
+            - w-full: Volle Breite des Dashboards.
+            - bg-white: Die Karte selbst ist weiß (Material Style).
+            - rounded-2xl: Sehr stark abgerundete Ecken für einen modernen Look.
+            - shadow-sm: Ein ganz dezenter Schatten.
+            - border border-gray-200: Ein feiner Rahmen.
+            - flex items-center justify-center: Zentriert den Platzhalter-Text.
+            - text-gray-300: Sehr heller Text, da es nur ein Platzhalter ist.
         */}
-        <div className="h-[500px] bg-gray-50 rounded-lg mb-4 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm">
-          Chat-Verlauf kommt hierher...
+        <div className="mt-10 h-64 w-full bg-white rounded-2xl shadow-sm border border-gray-200 flex items-center justify-center text-gray-300">
+          Schmerzkurve Grafik (Modul 3)
         </div>
-
-        {/* EINGABEFELD
-            - focus:ring-2: Wenn man reinklickt, erscheint ein schöner grüner Ring.
-            - outline-none: Entfernt den hässlichen Standard-Rahmen vom Browser.
-            - transition-all: Macht Effekte (wie das Leuchten beim Klicken) geschmeidig.
-        */}
-        <input 
-          type="text" 
-          placeholder="Schreib dem Coach..." 
-          className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-sm"
-        />
       </div>
+
+      {/* RECHTER BEREICH: UNSERE NEUE KOMPONENTE
+          Statt hier wieder 30 Zeilen Chat-Code zu schreiben, schreiben wir nur <ChatPanel />.
+          React fügt an dieser Stelle automatisch alles ein, was in der ChatPanel.tsx steht.
+      */}
+      <ChatPanel />
       
     </div>
   );
