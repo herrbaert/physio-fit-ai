@@ -1,0 +1,14 @@
+services:
+  # Das ist unserer KI-Server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"  # Port für die API
+    volumes:
+      - ollama_data:/root/.ollama  # Damit die Modelle auf deiner Festplatte gespeichert bleiben
+    restart: always
+
+    # Hier bereiten wir den Platz für deine Next.js App vor
+  # Wir lassen sie erst mal weg, bis das Backend steht, 
+  # damit wir uns auf Ollama konzentrieren können.
