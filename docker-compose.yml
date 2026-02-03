@@ -12,3 +12,6 @@ services:
     # Hier bereiten wir den Platz für deine Next.js App vor
   # Wir lassen sie erst mal weg, bis das Backend steht, 
   # damit wir uns auf Ollama konzentrieren können.
+
+volumes:
+  ollama_data:
